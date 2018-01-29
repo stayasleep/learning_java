@@ -53,6 +53,7 @@ class HelloComponent3 extends JComponent implements MouseMotionListener, ActionL
         }
     }
 
+    //the previous method and this must run in a mutually exclusive manner: hence synchronized
     synchronized private void changeColor(){
         //change the index to the next color
         if (++colorIndex == someColors.length){
