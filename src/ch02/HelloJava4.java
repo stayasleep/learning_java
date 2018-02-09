@@ -25,7 +25,7 @@ class HelloComponent4 extends JComponent implements MouseMotionListener, ActionL
 
     public HelloComponent4(String message){
         theMessage = message;
-        theButton = new JButtton("Change Color");
+        theButton = new JButton("Change Color");
         setLayout(new FlowLayout());
         add(theButton);
         theButton.addActionListener(this);
@@ -33,4 +33,46 @@ class HelloComponent4 extends JComponent implements MouseMotionListener, ActionL
         Thread t=new Thread(this);
         t.start();
     }
+
+    public void paintComponent(Graphics g){
+        g.setColor(blinkState ? getBackground() : currentColor());
+        g.drawString(theMessage, messageX, messageY);
+    }
+
+    public void mouseDragged(MouseEvent e){
+        messageX = e.getX();
+        messageY = e.getY();
+        repaint();
+    }
+
+    public void mouseMoved(MouseEvent e) {}
+
+    public void actionPerformed(ActionEvent e){
+        if(e.getSource() == theButton){
+            changeColor();
+        }
+    }
+
+    synchronized private void changeColor(){
+        if(++colorIndex == someColors.length){
+            colorIndex = 0;
+        }
+        setForeground(currentColor());
+        repaint();
+    }
+
+    synchronized private Color currentColor(){
+        return someColors[colorIndex];
+    }
+
+    public void run(){
+        try{
+            while(true){
+                blinkState = !blinkState;//toggle blink
+                repaint();
+                Thread.sleep(300);
+            }
+        }catch(InterruptedException ie){}
+    }
+
 }
